@@ -253,6 +253,8 @@ class Router(BaseNode):
         Starts this router.
         At least the IOS image must be set before it can start.
         """
+        log.info("Executing the start func of Router BaseNode.")
+
 
         status = await self.get_status()
         if status == "suspended":

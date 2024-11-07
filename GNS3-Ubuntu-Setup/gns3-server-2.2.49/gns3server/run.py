@@ -218,6 +218,7 @@ def run():
     user_log.info("GNS3 server version {}".format(__version__))
     current_year = datetime.date.today().year
     user_log.info("Copyright (c) 2007-{} GNS3 Technologies Inc.".format(current_year))
+    user_log.info("ZCL's logs are inserted.")
 
     for config_file in Config.instance().get_config_files():
         user_log.info("Config file {} loaded".format(config_file))

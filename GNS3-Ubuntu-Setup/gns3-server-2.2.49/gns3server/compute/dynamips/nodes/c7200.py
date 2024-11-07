@@ -229,6 +229,8 @@ class C7200(Router):
         At least the IOS image must be set before starting it.
         """
 
+        log.info("Executing the start func of c7200 BaseNode.")
+
         # trick: we must send sensors and power supplies info after starting the router
         # otherwise they are not taken into account (Dynamips bug?)
         await Router.start(self)
