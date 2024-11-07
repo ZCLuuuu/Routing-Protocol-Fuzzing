@@ -1,4 +1,7 @@
 GNS3-Ubuntu-Setup/venv4gns3/
+Fuzz-Material/fuzzingbook/
+Fuzz-Material/pygraphviz/
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
