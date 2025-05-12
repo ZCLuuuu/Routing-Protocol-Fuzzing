@@ -1,94 +1,201 @@
-
 # Routing Protocol Fuzzing Project
 
-This project is designed for fuzz testing BGP protocols. It includes setup scripts and instructions for configuring a GNS3 environment, Python virtual environment, and necessary dependencies for fuzzing network protocols.
+This project provides a fuzz testing framework for the BGP (Border Gateway Protocol), including setup scripts for configuring a GNS3 simulation environment and a Python-based fuzzer for protocol testing.
 
+## Prerequisites
 
-## Ubuntu GNS3 Environment Setup
-
-To set up GNS3 on Ubuntu with a Python virtual environment (`gns3venv`), follow these steps using the `setup_gns3_env.sh` script:
-
-    1) Ensure you are in Routing-Protocol-Fuzzing directory.
-    
-    2) Run './setup_gns3_env.sh'.
-    
-    3) Activate venv with 'source GNS3-Ubuntu-Setup/venv4gns3/bin/activate'.
-    
-    4) Run 'gns3' in this venv to start the application.
-
-
-**Note**:
-- The script automatically deletes and recreates the `venv` at `GNS3-Ubuntu-Setup/venv4gns3` if it already exists.
-- Download the GNS3 VM from [GNS3’s official site](https://gns3.com/software/download-vm) if it’s not installed. It’s recommended to use VMware Workstation Pro instead of VirtualBox to avoid compatibility issues.
-
-
-
-## Fuzzing BGP Protocols
-
-This project includes a baseline fuzzer implemented in `fuzz_baseline.ipynb` for fuzz testing BGP protocols.
-
-### 1. Importing Network Topology
-
-1. Import the network topology located in subdirectory `BGP_Basic_Topology`.
-2. Use the `ubuntugns3` project file for Ubuntu compatibility.
-3. Ensure that the **C7200-XB12 router IOS** is pre-imported into GNS3.
-4. Start the GNS3 project and ensure all nodes are running.
-
-### 2. Setting up the Fuzzing Development Environment
-
-To set up the development environment, you can either run the setup script or manually install dependencies.
-
-- **Automatic Setup**:
-   Run the following commands to execute the setup script:
-
-   ```bash
-   cd Fuzz-Material
-   ./set_env.sh
-   ```
-
-- **Manual Setup**:
-   Alternatively, you can manually install the necessary packages by downloading `fuzzingbook` and `pygraphviz`.
-
-### 3. Running the Baseline Fuzzer
-
-The `fuzz_baseline.ipynb` notebook provides the baseline fuzzer for BGP fuzzing. To use it:
-
-1. **Open `fuzz_baseline.ipynb` in Jupyter Notebook**:
-   Use the `gns3venv` as the interpreter and kernel.
-
-2. **Start the GNS3 Project**:
-   Ensure that the GNS3 project is open and all nodes are started in the GNS3 GUI before running the notebook.
-
-3. **Execute the Notebook**:
-   Follow the instructions in the notebook to begin fuzzing the BGP protocol.
-
-
-
-## System Requirements
-
-- **Operating System**: Linux Kernel 6.8.0-47-generic
-- **Python Version**: Python 3 with the following dependencies:
-  - `fuzzingbook`
-  - `pygraphviz`
-- **Additional System Packages**:
-  - `python3`, `python3-pip`, `pipx`, `python3-pyqt5`, `python3-pyqt5.qtwebsockets`, `python3-pyqt5.qtsvg`
-  - `qemu-kvm`, `qemu-utils`, `libvirt-clients`, `libvirt-daemon-system`, `virtinst`, `dynamips`
-  - `software-properties-common`, `ca-certificates`, `curl`, `gnupg2`
-
-**Installing System Dependencies**:
-
-If any dependencies are missing, you can install them using:
+To install system dependencies:
 
 ```bash
-sudo apt install python3 python3-pip pipx python3-pyqt5 python3-pyqt5.qtwebsockets python3-pyqt5.qtsvg qemu-kvm qemu-utils libvirt-clients libvirt-daemon-system virtinst dynamips software-properties-common ca-certificates curl gnupg2
+sudo apt install python3 python3-pip pipx \
+python3-pyqt5 python3-pyqt5.qtwebsockets python3-pyqt5.qtsvg \
+qemu-kvm qemu-utils libvirt-clients libvirt-daemon-system virtinst dynamips \
+software-properties-common ca-certificates curl gnupg2
 ```
+
+---
+
+## BGPFuzz Testing Environment Setup
+
+This project consists of two components: the tester (BGPFuzz) and the test environment (GNS3 + GNS3 VM + network topology).
+
+### Installing GNS3 and Loading GNS3 VM
+
+To improve portability, we first set up GNS3 with a Python virtual environment (`gns3venv`) on Ubuntu:
+
+1. Install VMware Workstation Pro from either the [official site](https://www.vmware.com/products/workstation-pro.html) or the [direct link](https://github.com/201853910/VMwareWorkstation/releases/download/16.0/VMware-Workstation-Full-16.2.5-20904516.x86_64.bundle).
+2. Download the GNS3 VM from the [official site](https://github.com/GNS3/gns3-gui/releases/download/v2.2.54/GNS3.VM.VMware.Workstation.2.2.54.zip) and load it into VMware Workstation Pro (Keep its name GNS3 VM).
+3. Install GNS3:
+   ```bash
+   # Run the setup script from the Routing-Protocol-Fuzzing directory:
+   ./setup_gns3_env.sh
+   ```
+
+### Installing BGPFuzz
+
+```bash
+# Install the dependencies for BGPFuzz
+cd Fuzz-Material
+./set_env.sh
+```
+
+
+
+## Usage
+
+1. Launch GNS3, it will automatically launch VMware and start GNS3VM, please wait for at least 1min:
+
+```bash
+# Activate the virtual environment
+source GNS3-Ubuntu-Setup/venv4gns3/bin/activate
+# Launch GNS3
+gns3
+```
+
+2. If GNS3VM is not launched, click on GNS3's menu bar - Help - Setup Wizard - Run applicaces in a virtual machine - Next - Next - Next - VMware/refresh - Next - Finished
+
+
+
+<img src="Figs/GNS3-1.png" alt="drawing" width="600"/>
+<img src="Figs/GNS3-2.png" alt="drawing" width="600"/>
+<img src="Figs/GNS3-3.png" alt="drawing" width="600"/>
+<img src="Figs/GNS3-4.png" alt="drawing" width="600"/>
+<img src="Figs/GNS3-5.png" alt="drawing" width="600"/>
+<img src="Figs/GNS3-6.png" alt="drawing" width="600"/>
+
+
+2. Load topologies for different scenarios: 
+
+```bash
+Routing-Protocol-Fuzzing (Root directory)
+├───BGP_Basic_Topology (Network topology project)
+│   ├───exp0----max-prefix-failure-reproduction
+│   │   └───project-files
+│   │       └───dynamips
+│   ├───exp1----sub-prefix-hijacks-interception-reproduction
+│   │   └───project-files
+│   │       └───dynamips
+
+```
+<img src="Figs/BGPFuzz-LoadTopo0.png" alt="drawing" width="600"/>
+<img src="Figs/BGPFuzz-LoadTopo.png" alt="drawing" width="600"/>
+
+4. Start all nodes
+<img src="Figs/BGPFuzz-StartAllNode.png" alt="drawing" width="600"/>
+
+5. Modify the config for BGPFuzz: The project name and the file path.
+<img src="Figs/BGPFuzz-Setting.png" alt="drawing" width="600"/>
+
+6. Run BGPFuzz with this cmd:
+
+```bash
+python3 bgpfuzz.py
+```
+
+7. Enter the selected node to perform testing on: In this case we select R5 and the first link.
+<img src="Figs/BGPFuzz-Prompt.png" alt="drawing" width="600"/>
+
+8. Wait for console output the bug report:
+<img src="Figs/BGPFuzz-Output.png" alt="drawing" width="600"/>
+
+## Sample Bug Report Analysis: Sub-prefix Hijack Detection
+
+This output shows a full run of `sub-prefix-fuzzer.py` analyzing BGP prefix announcements to detect sub-prefix hijacking patterns.
+
+### 🎯 Node and Link Selection
+
+```text
+chosen_name: R5
+
+Available Links for the selected node:
+  1. Link 1 (Connected to: R3)
+
+Selected Project ID: 9890d5d6-5ea2-4d1c-9b81-8ce46918a321  
+Selected Node ID: 181dcc4c-69c0-48e7-9a43-1f9036c14d6b  
+Selected Link ID: e46d6ccc-44de-4fc2-bbd6-89cd1f37e2fc  
+Configuration file retrieved successfully.  
+[+] Found VM: /home/test/vmware/GNS3 VM/GNS3 VM.vmx  
+[+] VM IP: 172.16.169.129  
+```
+
+### 📡 BGP Table Dump (Before Mutation)
+
+```
+textCopy code[*] Launching Telnet and sending 'show ip bgp'...
+Connected to Dynamips VM "R1" (ID 1, type c7200) - Console port
+
+BGP table version is 28, local router ID is 208.65.152.1
+
+     Network          Next Hop            Metric LocPrf Weight Path
+ r>  10.0.1.0/30      10.0.1.2                 0             0 65010 i
+ *>  10.0.2.0/30      10.0.1.2                 0             0 65010 i
+ *>  10.0.3.0/30      10.0.1.2                 0             0 65010 i
+ *>  10.0.4.0/30      10.0.1.2                               0 65010 65020 i
+ *>  208.65.152.0     10.0.1.2                               0 65010 65020 65040 i
+ *>  208.65.152.0/22  0.0.0.0                  0         32768 i
+ *>  208.65.153.0     10.0.1.2                               0 65010 65020 65040 i
+```
+
+------
+
+### 🧬 Prefix Extraction
+
+```
+textCopy code[*] Extracting BGP prefixes from log...
+[+] Prefixes found:
+  - 10.0.1.0/30
+  - 10.0.2.0/30
+  - 10.0.3.0/30
+  - 10.0.4.0/30
+  - 208.65.152.0/22
+  - 208.65.152.0/24
+  - 208.65.153.0/24
+```
+
+------
+
+### 🧪 Mutation Phase
+
+```
+textCopy codeMutation applied: no sub-prefix inserted
+```
+
+*Note: In this run, the mutation logic detected existing sub-prefixes and therefore skipped new insertion.*
+
+------
+
+### ⚠️ Oracle Detection Result
+
+```
+textCopy code[!] Duplicate prefix pattern detected:
+ - 208.65.152.0/24 is a more specific sub-prefix of 208.65.152.0/22
+ - 208.65.153.0/24 is a more specific sub-prefix of 208.65.152.0/22
+
+[Oracle] Found 2 suspicious prefix overlaps.
+```
+
+------
+
+### 🔄 Recovery Phase
+
+```
+textCopy code[Recovery Phase] Restoring original configuration...
+[+] Stopping node 181dcc4c-69c0-48e7-9a43-1f9036c14d6b...
+Node ... stopped successfully.
+[+] Uploading configuration...
+Configuration file uploaded successfully.
+[+] Starting node ...
+Node ... started successfully.
+```
+
+------
+
 
 
 ## Contact
 
-For questions, suggestions, or further assistance, please reach out to the author:
+For questions or support, contact:
 
-**Email**: [zhanglv0413@163.com](mailto:zhanglv0413@163.com)
-```
+**Chenlu Zhang**
+📧 [zhanglv0413@163.com](mailto\:zhanglv0413@163.com)
 
-This README includes all relevant information for setting up the environment, configuring GNS3, running the fuzzer, and meeting system requirements. It is organized into sections for easy navigation. Let me know if you need further adjustments!
