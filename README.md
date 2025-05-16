@@ -9,7 +9,7 @@ To install system dependencies:
 ```bash
 sudo apt install python3 python3-pip pipx \
 python3-pyqt5 python3-pyqt5.qtwebsockets python3-pyqt5.qtsvg \
-qemu-kvm qemu-utils libvirt-clients libvirt-daemon-system virtinst dynamips \
+qemu-kvm qemu-utils libvirt-clients libvirt-daemon-system virtinst dynamips libpcap-dev \
 software-properties-common ca-certificates curl gnupg2
 ```
 
@@ -23,7 +23,7 @@ This project consists of two components: the tester (BGPFuzz) and the test envir
 
 To improve portability, we first set up GNS3 with a Python virtual environment (`gns3venv`) on Ubuntu:
 
-1. Install VMware Workstation Pro from either the [official site](https://www.vmware.com/products/workstation-pro.html) or the [direct link](https://github.com/201853910/VMwareWorkstation/releases/download/16.0/VMware-Workstation-Full-16.2.5-20904516.x86_64.bundle).
+1. Install VMware Workstation Pro from either the [official site](https://support.broadcom.com/group/ecx/productfiles?subFamily=VMware%20Workstation%20Pro&displayGroup=VMware%20Workstation%20Pro%2017.0%20for%20Linux&release=17.6&os=&servicePk=522391&language=EN&freeDownloads=true) or the [direct link](https://github.com/201853910/VMwareWorkstation/releases/download/16.0/VMware-Workstation-Full-16.2.5-20904516.x86_64.bundle). (I would suggest download the latest version from official site rather than the direct link)
 2. Download the GNS3 VM from the [official site](https://github.com/GNS3/gns3-gui/releases/download/v2.2.54/GNS3.VM.VMware.Workstation.2.2.54.zip) and load it into VMware Workstation Pro (Keep its name GNS3 VM).
 3. Install GNS3:
    ```bash

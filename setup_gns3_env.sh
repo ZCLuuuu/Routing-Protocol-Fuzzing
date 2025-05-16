@@ -28,19 +28,27 @@ source "$VENV_DIR/bin/activate"
 cd GNS3-Ubuntu-Setup
 # Install dependencies for gns3-gui
 echo "Installing dependencies for GNS3 GUI..."
-cd gns3-gui-2.2.49/ || exit
+cd gns3-gui-2.2.54/ || exit
 python -m pip install -r requirements.txt
 python -m pip install .
 
 # Install dependencies for gns3-server
 echo "Installing dependencies for GNS3 Server..."
-cd ../gns3-server-2.2.49/ || exit
+cd ../gns3-server-2.2.54/ || exit
 python -m pip install -r requirements.txt
 python -m pip install .
 
 # Install PyQt5
 echo "Installing PyQt5..."
 pip install PyQt5
+
+# Install Ubridge
+echo "Installing Ubridge..."
+git clone https://github.com/GNS3/ubridge.git
+cd ubridge/
+make
+sudo make install
+cd ../
 
 # Deactivate virtual environment
 echo "Deactivating virtual environment..."
