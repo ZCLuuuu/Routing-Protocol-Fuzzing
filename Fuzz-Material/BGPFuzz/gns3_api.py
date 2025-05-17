@@ -12,16 +12,16 @@ def get_project_and_links(file_path):
             data = json.load(file)
     except FileNotFoundError:
         print(f"Error: File not found at {file_path}")
-        return None, None, None, None
+        return None, None, None, None, None
     except json.JSONDecodeError:
         print(f"Error: Failed to decode JSON from {file_path}")
-        return None, None, None, None
+        return None, None, None, None, None
 
     # Extract project_id
     project_id = data.get('project_id')
     if not project_id:
         print("Error: 'project_id' field not found in the JSON file.")
-        return None, None, None, None
+        return None, None, None, None, None
 
     # Extract nodes and links from topology
     topology = data.get('topology', {})
@@ -30,7 +30,7 @@ def get_project_and_links(file_path):
 
     if not nodes:
         print("Error: No nodes found in the 'topology' field of the JSON file.")
-        return project_id, None, None, None
+        return project_id, None, None, None, None
 
     # Create a mapping from node_id to node_name
     node_id_to_name = {node['node_id']: node['name'] for node in nodes if 'node_id' in node and 'name' in node}
@@ -45,7 +45,7 @@ def get_project_and_links(file_path):
 
     if not node_choices:
         print("No valid nodes found with both 'node_id' and 'name'.")
-        return project_id, None, None, None
+        return project_id, None, None, None, None
 
     print("\nChoose a node by its name from the list:")
     for name in node_choices.keys():
@@ -61,10 +61,10 @@ def get_project_and_links(file_path):
 
     if not node_id:
         print("Invalid choice. Node name not found.")
-        return project_id, None, None, None
+        return project_id, None, None, None, config_path
     if not telnet_port:
         print("Invalid choice. Port not found.")
-        return project_id, None, None, None
+        return project_id, None, None, None, config_path
 
     # Filter and display links for the chosen node
     print("\nAvailable Links for the selected node:")
@@ -75,7 +75,7 @@ def get_project_and_links(file_path):
 
     if not filtered_links:
         print("No links found for the selected node.")
-        return project_id, node_id, None, telnet_port
+        return project_id, node_id, None, telnet_port, config_path
 
     link_choices = {}
     for i, link in enumerate(filtered_links, start=1):
@@ -93,7 +93,7 @@ def get_project_and_links(file_path):
         link_id = link_choices[chosen_link_name]
     except (IndexError, ValueError):
         print("Invalid choice. Link not found.")
-        return project_id, node_id, None, telnet_port
+        return project_id, node_id, None, telnet_port, config_path
 
     return project_id, node_id, link_id, telnet_port, config_path
 

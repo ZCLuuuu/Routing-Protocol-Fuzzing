@@ -1,11 +1,11 @@
 project_name = 'hijacking'
-file_path = f'/home/test/GNS3/projects/{project_name}/{project_name}.gns3'
+file_path = f'/home/chenlu/GNS3/projects/{project_name}/{project_name}.gns3'
 config_path = "i1_startup-config.cfg"
 capture_file_name = 'test-capture.pcap'
 
 BASE_URL = "http://127.0.0.1:3080"  # Adjust if GNS3 server is not localhost
 AUTH_HEADER = {
-    "Authorization": "Basic YWRtaW46bldCTnI5TWk3RVRqeGFocUxmQXpNTFVwV3daN0ZJbGxicnViR01LVkVVMlpiZldoeG4wajFycGRKZ0JOdVF4Yw==",
+    "Authorization": "Basic YWRtaW46R0x2M2ExVXN4c24ySHJUb1BsRG5QRjQ4d2JjWTE5ZDdRdjZnV0tqUFlpWFNIUlFBaDM3QlBRNFByTDdsV0JqSQ==",
     "User-Agent": "GNS3 QT Client v2.2.49",
     "Content-Type": "application/json"
 }

@@ -30,7 +30,7 @@ def run_fuzzing_cycle(project_id, node_id, link_id, config_path, original_config
 
     upload_config_with_restart(project_id, node_id, config_path, mutated_config)
     start_capture(project_id, link_id, capture_file_name)
-    time.sleep(10)
+    # time.sleep(10)
 
     result, pairs = oracle_duplicate_prefix(telnet_port)
     if result:
@@ -38,7 +38,7 @@ def run_fuzzing_cycle(project_id, node_id, link_id, config_path, original_config
 
     print("\n[Recovery Phase] Reloading all nodes to restore initial state...")
     reload_all_nodes(project_id)
-    time.sleep(5)
+    # time.sleep(5)
 
 
 def main():

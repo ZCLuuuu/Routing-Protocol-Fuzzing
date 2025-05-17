@@ -37,21 +37,14 @@ while {{ $tries > 0 }} {{
     }}
 }}
 
-after 100000
+after 5000
 expect "#"
 send "show ip bgp\\r"
 expect "#"
 send "show ip bgp\\r"
 expect "#"
 send "show ip bgp\\r"
-expect "#"
-send "show ip bgp\\r"
-expect "#"
-send "show ip bgp\\r"
-expect "#"
-send "show ip bgp\\r"
-expect "#"
-send "show ip bgp\\r"
+
 
 expect "#"
 send "exit\\r"
@@ -86,6 +79,8 @@ def extract_prefixes(log_path):
 
                 try:
                     ip_net = ipaddress.IPv4Network(prefix, strict=False)
+                    if ip_net.network_address == ipaddress.IPv4Address("0.0.0.0"):
+                        continue
                     prefixes.add(str(ip_net))
                 except Exception as e:
                     print(f"Warning: Skipping invalid prefix {prefix} ({e})")
