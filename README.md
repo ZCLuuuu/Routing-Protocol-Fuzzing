@@ -65,6 +65,7 @@ gns3
 
 
 2. Load topologies for different scenarios: 
+> Note: You may need to import operating system's image for routers manually if the nodes in project can't be started properly. In our project file we use Cisoco C7200 XB12 IOS.
 
 ```bash
 Routing-Protocol-Fuzzing (Root directory)
@@ -87,15 +88,16 @@ Routing-Protocol-Fuzzing (Root directory)
 <img src="Figs/BGPFuzz-Setting.png" alt="drawing" width="600"/>
 
 6. Run BGPFuzz with this cmd:
+> Note: To enable BGPFuzz connect to GNS3VM, you may need to change the AUTH HEADER in config.py by running gns3server --local --debug and find the line containning string like Authorization': 'Basic YWRtaW46R0x2M2ExVXN4c24ySHJUb1BsRG5QRjQ4d2JjWTE5ZDdRdjZnV0tqUFlpWFNIUlFBaDM3QlBRNFByTDdsV0JqSQ=='
 
 ```bash
 python3 bgpfuzz.py
 ```
 
-7. Enter the selected node to perform testing on: In this case we select R5 and the first link.
+1. Enter the selected node to perform testing on: In this case we select R5 and the first link.
 <img src="Figs/BGPFuzz-Prompt.png" alt="drawing" width="600"/>
 
-8. Wait for console output the bug report:
+1. Wait for console output the bug report:
 <img src="Figs/BGPFuzz-Output.png" alt="drawing" width="600"/>
 
 ## Sample Bug Report Analysis: Sub-prefix Hijack Detection
