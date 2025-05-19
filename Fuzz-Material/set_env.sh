@@ -4,3 +4,4 @@ pip install pygraphviz
 pip install fuzzingbook
 pip install pyshark
 pip install requests
+pip install pandas

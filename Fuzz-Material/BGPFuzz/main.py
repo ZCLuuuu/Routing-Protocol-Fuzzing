@@ -25,20 +25,24 @@ def choose_fuzzer(seed, telnet_port, weights=(0.3, 0.3, 0.4)):
 
 def run_fuzzing_cycle(project_id, node_id, link_id, config_path, original_config, telnet_port):
     fuzzer = choose_fuzzer(seed=[original_config], telnet_port=telnet_port, weights=(1, 0, 0))
-    mutated_config, info = fuzzer.fuzz()
-    print(f"\nMutation applied: {info}")
+    for i in range(5):
+        print(f"\n--- Fuzzing Iteration {i + 1} ---")
+        mutated_config, info = fuzzer.fuzz()
+        print(f"Mutation applied: {info}")
 
-    upload_config_with_restart(project_id, node_id, config_path, mutated_config)
-    start_capture(project_id, link_id, capture_file_name)
-    # time.sleep(10)
+        upload_config_with_restart(project_id, node_id, config_path, mutated_config)
+        start_capture(project_id, link_id, capture_file_name=f"capture_{i+1}.pcap")
+        time.sleep(60)
 
-    result, pairs = oracle_duplicate_prefix(telnet_port)
-    if result:
-        print(f"[Oracle] Found {len(pairs)} suspicious prefix overlaps.")
+        result, pairs = oracle_duplicate_prefix(telnet_port)
+        if result:
+            print(f"[Oracle] Found {len(pairs)} suspicious prefix overlaps.")
 
-    print("\n[Recovery Phase] Reloading all nodes to restore initial state...")
-    reload_all_nodes(project_id)
-    # time.sleep(5)
+            print("\n[Recovery Phase] Reloading all nodes to restore initial state...")
+            upload_config_with_restart(project_id, node_id, config_path, original_config)
+            reload_all_nodes(project_id)
+            time.sleep(60)
+
 
 
 def main():
@@ -56,6 +60,10 @@ def main():
         return
 
     run_fuzzing_cycle(project_id, node_id, link_id, config_path, original_config, telnet_port)
+   
 
 if __name__ == "__main__":
     main()
+
+
+
