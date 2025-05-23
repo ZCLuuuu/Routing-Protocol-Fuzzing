@@ -29,6 +29,8 @@ def run_fuzzing_cycle(project_id, node_id, link_id, config_path, original_config
         print(f"\n--- Fuzzing Iteration {i + 1} ---")
         mutated_config, info = fuzzer.fuzz()
         print(f"Mutation applied: {info}")
+        if info=="no sub-prefix inserted":
+            continue
 
         upload_config_with_restart(project_id, node_id, config_path, mutated_config)
         start_capture(project_id, link_id, capture_file_name=f"capture_{i+1}.pcap")
@@ -42,6 +44,9 @@ def run_fuzzing_cycle(project_id, node_id, link_id, config_path, original_config
             upload_config_with_restart(project_id, node_id, config_path, original_config)
             reload_all_nodes(project_id)
             time.sleep(60)
+    upload_config_with_restart(project_id, node_id, config_path, original_config)
+    reload_all_nodes(project_id)
+    time.sleep(60)
 
 
 

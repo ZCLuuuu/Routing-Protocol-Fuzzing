@@ -79,7 +79,7 @@ def extract_prefixes(log_path):
 
     # Match entries like: *> 10.0.1.0/30 OR *> 208.65.153.0 (no mask)
     bgp_line_pattern = re.compile(
-        r'^\s*[r\*]?>?\s+(\d{1,3}(?:\.\d{1,3}){3})(/\d{1,2})?', re.IGNORECASE
+        r'^\s*\*>?\s+(\d{1,3}(?:\.\d{1,3}){3})(/\d{1,2})?', re.IGNORECASE
     )
 
     with open(log_path, "r") as f:

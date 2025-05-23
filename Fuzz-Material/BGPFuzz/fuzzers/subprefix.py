@@ -28,7 +28,7 @@ class SubPrefixFuzzer(Fuzzer):
         """
         Mutate the input config by inserting one sub-prefix-related config block.
         Randomly chooses one of:
-        - 'interface': Insert Loopback + static route
+        - 'interface': Insert Loopback
         - 'bgp': Insert BGP network statement
         - 'staticroute': Insert static route to Null0
         """
@@ -61,7 +61,10 @@ class SubPrefixFuzzer(Fuzzer):
                 base = random.choice(candidates)
                 sub = self.get_subprefix(base)
                 if sub:
-                    sub_ip = str(sub.network_address)
+                    ip_parts = list(sub.network_address.packed)
+                    ip_parts[3] = 1
+                    sub_ip = str(ipaddress.IPv4Address(bytes(ip_parts)))
+                    sub_ip = str(sub.network_address)            
                     sub_mask = str(sub.netmask)
                     int_no = int(random.random() * 10000)
                     indent = re.match(r'^(\s*)', line).group(1)
@@ -71,7 +74,7 @@ class SubPrefixFuzzer(Fuzzer):
                     result.append(f"{indent} ip address {sub_ip} {sub_mask}")
                     result.append("!")
                     inserted = True
-                    info = f"[interface] Inserted Loopback{int_no} + static route for {sub} from {base}"
+                    info = f"[interface] Inserted Loopback{int_no} for {sub} from {base}"
 
             # Strategy 2: Insert network under router bgp block
             if strategy == "bgp" and re.match(r'\s*network\s+\d+\.\d+\.\d+\.\d+', line):
@@ -79,14 +82,15 @@ class SubPrefixFuzzer(Fuzzer):
                 if not candidates:
                     continue
                 base = random.choice(candidates)
-                sub = self.get_subprefix(base)
-                if sub:
-                    sub_ip = str(sub.network_address)
-                    sub_mask = str(sub.netmask)
-                    indent = re.match(r'^(\s*)', line).group(1)
-                    result.append(f"{indent}network {sub_ip} mask {sub_mask}")
-                    inserted = True
-                    info = f"[bgp] Inserted network {sub} from {base}"
+                # sub = self.get_subprefix(base)
+                # if sub:
+                sub = base
+                sub_ip = str(base.network_address)
+                sub_mask = str(base.netmask)
+                indent = re.match(r'^(\s*)', line).group(1)
+                result.append(f"{indent}network {sub_ip} mask {sub_mask}")
+                inserted = True
+                info = f"[bgp] Inserted network {sub} from {base}"
 
             # Strategy 3: Insert a static route to Null0 at any '!' after interface
             if strategy == "staticroute" and re.match(r'^\s*!\s*$', line) and near_interface:
@@ -104,7 +108,9 @@ class SubPrefixFuzzer(Fuzzer):
                     result.append("!")
                     inserted = True
                     info = f"[staticroute] Inserted static route for {sub} from {base}"
-
+        if strategy_hint == 'bgp':
+            print('\n'.join(result))
+        self.population.append('\n'.join(result))
         return '\n'.join(result), info if inserted else "no sub-prefix inserted"
 
     def fuzz(self):
@@ -123,4 +129,12 @@ class SubPrefixFuzzer(Fuzzer):
         else:
             self.inp, _ = self.mutate(random.choice(self.population), pfxs, strategy_hint)
 
-        return self.mutate(self.inp, pfxs, strategy_hint)
+        print(f'[debug-info:] the strategy is {strategy_hint}, the prefix:')
+        if strategy_hint == "bgp":
+            for pfx in subnet_pfxs:
+                print(f"  - {pfx}")
+        else:
+            for pfx in pfxs:
+                print(f"  - {pfx}")
+
+        return self.mutate(self.inp, subnet_pfxs, strategy_hint) if strategy_hint == "bgp" else self.mutate(self.inp, pfxs, strategy_hint)
