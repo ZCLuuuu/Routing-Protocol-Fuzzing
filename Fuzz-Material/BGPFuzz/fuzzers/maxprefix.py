@@ -3,18 +3,23 @@ import re
 import random
 
 def force_max_prefix_one(config: str):
-    pattern = re.compile(r'(neighbor\s+\d{1,3}(?:\.\d{1,3}){3}\s+maximum-prefix\s+)(\d+)(\s+\d+)', re.IGNORECASE)
-    mutated_part = None
+    print("force_max_prefix_one reached")
+    remote_as_pattern = re.compile(r'^ (neighbor\s+(\d{1,3}(?:\.\d{1,3}){3})\s+remote-as\s+\d+)', re.IGNORECASE)
+    lines = config.splitlines()
+    output_lines = []
+    mutated_part = []
 
-    def replacer(match):
-        nonlocal mutated_part
-        before = match.group(0)
-        after = match.group(1) + "1" + match.group(3)
-        mutated_part = f"{before} -> {after}"
-        return after
+    for i, line in enumerate(lines):
+        output_lines.append(line)
+        match = remote_as_pattern.match(line)
+        if match:
+            print("matched "+line)
+            neighbor_ip = match.group(2)
+            insert_line = f' neighbor {neighbor_ip} maximum-prefix 1 75'
+            output_lines.append(insert_line)
+            mutated_part.append(f"Inserted after line {i}: {insert_line.strip()}")
 
-    mutated_config = pattern.sub(replacer, config)
-    return mutated_config, mutated_part
+    return '\n'.join(output_lines), '\n'.join(mutated_part)
 
 class MaxPrefixFuzzer(Fuzzer):
     def __init__(self, seed):

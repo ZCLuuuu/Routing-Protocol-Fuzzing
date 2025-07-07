@@ -64,7 +64,7 @@ class SubPrefixFuzzer(Fuzzer):
                     ip_parts = list(sub.network_address.packed)
                     ip_parts[3] = 1
                     sub_ip = str(ipaddress.IPv4Address(bytes(ip_parts)))
-                    sub_ip = str(sub.network_address)            
+                    # sub_ip = str(sub.network_address)            
                     sub_mask = str(sub.netmask)
                     int_no = int(random.random() * 10000)
                     indent = re.match(r'^(\s*)', line).group(1)
@@ -74,7 +74,7 @@ class SubPrefixFuzzer(Fuzzer):
                     result.append(f"{indent} ip address {sub_ip} {sub_mask}")
                     result.append("!")
                     inserted = True
-                    info = f"[interface] Inserted Loopback{int_no} for {sub} from {base}"
+                    info = f"[interface] Inserted Loopback{int_no} for {sub_ip} from {base}"
 
             # Strategy 2: Insert network under router bgp block
             if strategy == "bgp" and re.match(r'\s*network\s+\d+\.\d+\.\d+\.\d+', line):

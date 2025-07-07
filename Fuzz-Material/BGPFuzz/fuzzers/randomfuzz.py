@@ -21,7 +21,7 @@ class MyBaselineFuzzer(Fuzzer):
             if "network" in line and "mask" in line:
                 parts = line.split()
                 if len(parts) >= 4:
-                    parts[1] = "{}.{}.{}.{}".format(*[random.randint(1, 254) for _ in range(4)])
+                    parts[1] = "{}.{}.{}.{}".format(*[random.randint(255,999) for _ in range(4)])
                     parts[3] = "255.255.255.0"
                     line = " ".join(parts)
             mutated_lines.append(line)

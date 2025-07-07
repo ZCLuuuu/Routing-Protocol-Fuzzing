@@ -151,3 +151,14 @@ def start_capture(project_id, link_id, capture_file_name):
     else:
         print(f"[!] Capture error: {response.status_code}, {response.text}")
 
+def stop_capture(project_id, link_id, capture_file_name):
+    url = f"{BASE_URL}/v2/projects/{project_id}/links/{link_id}/stop_capture"
+    data = {
+        "capture_file_name": capture_file_name,
+        "data_link_type": "DLT_EN10MB"
+    }
+    response = requests.post(url, headers=AUTH_HEADER, json=data)
+    if response.status_code == 201:
+        print("[+] Capture started.")
+    else:
+        print(f"[!] Capture error: {response.status_code}, {response.text}")

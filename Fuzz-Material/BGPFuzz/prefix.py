@@ -5,6 +5,9 @@ import tempfile
 import os
 import pandas as pd
 
+
+log_path = "bgp_output.log"
+
 def get_vm_path():
     result = subprocess.run(["vmrun", "list"], capture_output=True, text=True)
     for line in result.stdout.splitlines():
@@ -72,7 +75,6 @@ send "exit\\r"
     os.chmod(script_path, 0o755)
     subprocess.run(["expect", script_path])
     os.remove(script_path)
-
 
 def extract_prefixes(log_path):
     prefixes = set()
@@ -155,10 +157,10 @@ def get_prefix(telnet_port):
     print(f"[+] VM IP: {vm_ip}")
 
     print("[*] Launching Telnet and sending 'show ip bgp'...")
-    run_expect_telnet(vm_ip, telnet_port, "bgp_output.log")
+    run_expect_telnet(vm_ip, telnet_port, log_path)
 
     print("[*] Extracting BGP prefixes from log...")
-    prefixes = extract_prefixes("bgp_output.log")
+    prefixes = extract_prefixes(log_path)
 
     if prefixes:
         print("[+] Prefixes found in routing table:")
@@ -186,10 +188,10 @@ def get_subnet(telnet_port):
     print(f"[+] VM IP: {vm_ip}")
 
     print("[*] Launching Telnet and sending 'show ip bgp'...")
-    run_expect_telnet(vm_ip, telnet_port, "bgp_output.log")
+    run_expect_telnet(vm_ip, telnet_port, log_path)
 
     print("[*] Extracting BGP prefixes from log...")
-    prefixes = extract_static_and_loopbacks("bgp_output.log")
+    prefixes = extract_static_and_loopbacks(log_path)
 
     if prefixes:
         print("[+] Prefixes found for subnet:")
@@ -200,7 +202,16 @@ def get_subnet(telnet_port):
         print("[-] No subnet prefixes found.")
         return []
 
-all_pfx = extract_static_and_loopbacks("bgp_output.log")
+
+def get_ios_log():
+    # Note: we expect get_subnet run before this func so the log file already exist
+
+    print("[*] Extracting network incidents from log...")
+    with open(log_path, "r") as result:
+        return result.readlines()
+    
+
+all_pfx = extract_static_and_loopbacks(log_path=log_path)
 for _ in all_pfx:
     print(ipaddress.IPv4Network(_).network_address)
 

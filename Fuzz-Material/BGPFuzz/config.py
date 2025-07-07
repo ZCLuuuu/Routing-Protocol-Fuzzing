@@ -2,6 +2,7 @@ project_name = 'hijacking'
 file_path = f'/home/chenlu/GNS3/projects/{project_name}/{project_name}.gns3'
 config_path = "i1_startup-config.cfg"
 capture_file_name = 'test-capture.pcap'
+capture_path = f'/home/chenlu/GNS3/projects/{project_name}/project-files/captures/'
 
 BASE_URL = "http://127.0.0.1:3080"  # Adjust if GNS3 server is not localhost
 AUTH_HEADER = {
