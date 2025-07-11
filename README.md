@@ -87,11 +87,12 @@ Routing-Protocol-Fuzzing (Root directory)
 5. Modify the config for BGPFuzz: The project name and the file path.
 <img src="Figs/BGPFuzz-Setting.png" alt="drawing" width="600"/>
 
-6. Run BGPFuzz with this cmd:
+6. Fo to BGPFuzz's root directory, and run BGPFuzz with this cmd:
 > Note: To enable BGPFuzz connect to GNS3VM, you may need to change the AUTH HEADER in config.py by running gns3server --local --debug and find the line containning string like Authorization': 'Basic YWRtaW46R0x2M2ExVXN4c24ySHJUb1BsRG5QRjQ4d2JjWTE5ZDdRdjZnV0tqUFlpWFNIUlFBaDM3QlBRNFByTDdsV0JqSQ=='
 
 ```bash
-python3 bgpfuzz.py
+cd Fuzz-Material/BGPFuzz/
+python3 main.py
 ```
 
 1. Enter the selected node to perform testing on: In this case we select R5 and the first link.
@@ -192,12 +193,4 @@ Node ... started successfully.
 
 ------
 
-
-
-## Contact
-
-For questions or support, contact:
-
-**Chenlu Zhang**
-📧 [zhanglv0413@163.com](mailto\:zhanglv0413@163.com)
 
